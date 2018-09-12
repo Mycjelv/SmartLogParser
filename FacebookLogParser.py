@@ -46,6 +46,7 @@ parser.add_argument("-r", "--reference",
                     action='store',
                     dest='ref',
                     type=str,
+                    required=True,
                     help="Reference file for parsing")
 parser.add_argument("-f", "--filepath",
                     action='store',
@@ -53,12 +54,14 @@ parser.add_argument("-f", "--filepath",
                     type=str,
                     nargs="?",
                     default=cwd,
-                    help="Path that you want compare. Default is current path")
+                    help="Path that you want compare.Default is current path")
 parser.add_argument("-v", "--variable",
                     action='store',
                     dest='var',
                     type=str,
-                    help="Log search item comparison")
+                    nargs="?",
+                    default="",
+                    help="Log search item for comparison")
 
 arg = parser.parse_args()
 
@@ -95,17 +98,31 @@ def parseCompare(main,compare,path,srch):
                 if mainlines[k] == complines[k]:
                     pass
                 elif mainlines[k] > complines[k]:
+                    print "\n\n-----------------------------------------------------"
+                    print("\nFor files in root directory {}\n".format(path))
+                    print "-----------------------------------------------------\n"
                     print("\nFile ({})'s value for\n'{}'\nis LESS than the reference.\n\nReference Value: {}\nComparison Value: {}".format(compare,k.upper(),mainlines[k],complines[k]))
                     print "------------------------"
+                    logging.info("\n\n-----------------------------------------------------")
+                    logging.info("\nFor files in root directory {}\n".format(path))
+                    logging.info("-----------------------------------------------------\n")
                     logging.info("\nFile ({})'s value for\n'{}'\nis LESS than the reference.\n\nReference Value: {}\nComparison Value: {}".format(compare,k.upper(),mainlines[k],complines[k]))
                     logging.info("------------------------")
                 elif mainlines[k] < complines[k]:
+                    print "\n\n-----------------------------------------------------"
+                    print("\nFor files in root directory {}\n".format(path))
+                    print "-----------------------------------------------------\n"
                     print("\nFile ({})'s value for\n'{}'\nis GREATER than the reference.\n\nReference Value: {}\nComparison Value: {}".format(compare,k.upper(),mainlines[k],complines[k]))
                     print "------------------------"
+                    logging.info("\n\n-----------------------------------------------------")
+                    logging.info("\nFor files in root directory {}\n".format(path))
+                    logging.info("-----------------------------------------------------\n")
                     logging.info("\nFile ({})'s value for\n'{}'\nis GREATER than the reference.\n\nReference Value: {}\nComparison Value: {}".format(compare,k.upper(),mainlines[k],complines[k]))
                     logging.info("------------------------")
                 elif mainlines[k] != complines[k]:
-                    pass
+                    print "\n\n-----------------------------------------------------"
+                    print("\nFor files in root directory {}\n".format(root))
+                    print("INVALID PARAMETER: '{}'".format(k))
     elif len(mainlines) > len(complines):
         print("Check Shows Less in {}".format(comp))
         logging.error("Check Shows Less in {}".format(comp))
@@ -118,12 +135,6 @@ def parseCompare(main,compare,path,srch):
 
 def pathCycle(mainfile,path,var):
     for root, dirs, files in os.walk(path, topdown=True):
-        print "\n\n-----------------------------------------------------"
-        print("\nFor files in root directory {}\n".format(root))
-        print "-----------------------------------------------------\n"
-        logging.info("\n\n-----------------------------------------------------")
-        logging.info("\nFor files in root directory {}\n".format(root))
-        logging.info("-----------------------------------------------------\n")
         for fileA in files:
             comp = os.path.join(root,fileA)
             with open(mainfile) as main:
