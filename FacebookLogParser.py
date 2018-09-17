@@ -31,6 +31,11 @@ cwd = os.getcwd()
 
 print cwd
 
+# for x, y, z in os.walk(cwd, topdown=False):
+#     if 
+#         dfltref = os.path.join(x,z[0])
+#         print dfltref
+
 # if os == "Linux":
 #     LIN = True
 # else:
@@ -46,7 +51,7 @@ parser.add_argument("-r", "--reference",
                     action='store',
                     dest='ref',
                     type=str,
-                    required=True,
+                    # default=dfltref,
                     help="Reference file for parsing")
 parser.add_argument("-f", "--filepath",
                     action='store',
@@ -85,6 +90,11 @@ def createMasterDict(ref):
     
     return masterDict
 
+def myLog(text):
+    logging.info(text)
+    print text
+
+
 def parseCompare(main,compare,path,srch):
     comp = os.path.join(path,compare)
     mainlines = createMasterDict(main)
@@ -98,40 +108,27 @@ def parseCompare(main,compare,path,srch):
                 if mainlines[k] == complines[k]:
                     pass
                 elif mainlines[k] > complines[k]:
-                    print "\n\n-----------------------------------------------------"
-                    print("\nFor files in root directory {}\n".format(path))
-                    print "-----------------------------------------------------\n"
-                    print("\nFile ({})'s value for\n'{}'\nis LESS than the reference.\n\nReference Value: {}\nComparison Value: {}".format(compare,k.upper(),mainlines[k],complines[k]))
-                    print "------------------------"
-                    logging.info("\n\n-----------------------------------------------------")
-                    logging.info("\nFor files in root directory {}\n".format(path))
-                    logging.info("-----------------------------------------------------\n")
-                    logging.info("\nFile ({})'s value for\n'{}'\nis LESS than the reference.\n\nReference Value: {}\nComparison Value: {}".format(compare,k.upper(),mainlines[k],complines[k]))
-                    logging.info("------------------------")
+                    myLog("\n\n-----------------------------------------------------")
+                    myLog("\nFor files in root directory {}\n".format(path))
+                    myLog("-----------------------------------------------------\n")
+                    myLog("\nFile ({})'s value for\n'{}'\nis LESS than the reference.\n\nReference Value: {}\nComparison Value: {}".format(compare,k.upper(),mainlines[k],complines[k]))
+                    myLog("------------------------")
                 elif mainlines[k] < complines[k]:
-                    print "\n\n-----------------------------------------------------"
-                    print("\nFor files in root directory {}\n".format(path))
-                    print "-----------------------------------------------------\n"
-                    print("\nFile ({})'s value for\n'{}'\nis GREATER than the reference.\n\nReference Value: {}\nComparison Value: {}".format(compare,k.upper(),mainlines[k],complines[k]))
-                    print "------------------------"
-                    logging.info("\n\n-----------------------------------------------------")
-                    logging.info("\nFor files in root directory {}\n".format(path))
-                    logging.info("-----------------------------------------------------\n")
-                    logging.info("\nFile ({})'s value for\n'{}'\nis GREATER than the reference.\n\nReference Value: {}\nComparison Value: {}".format(compare,k.upper(),mainlines[k],complines[k]))
-                    logging.info("------------------------")
+                    myLog("\n\n-----------------------------------------------------")
+                    myLog("\nFor files in root directory {}\n".format(path))
+                    myLog("-----------------------------------------------------\n")
+                    myLog("\nFile ({})'s value for\n'{}'\nis GREATER than the reference.\n\nReference Value: {}\nComparison Value: {}".format(compare,k.upper(),mainlines[k],complines[k]))
+                    myLog("------------------------")
                 elif mainlines[k] != complines[k]:
                     print "\n\n-----------------------------------------------------"
-                    print("\nFor files in root directory {}\n".format(root))
+                    print("\nFor files in root directory {}\n".format(path))
                     print("INVALID PARAMETER: '{}'".format(k))
     elif len(mainlines) > len(complines):
-        print("Check Shows Less in {}".format(comp))
-        logging.error("Check Shows Less in {}".format(comp))
+        myLog("Check Shows Less in {}".format(comp))
     elif len(mainlines) < len(complines):
-        print("Check Shows Greater in {}".format(comp))
-        logging.error("Check Shows Greater in {}".format(comp))
+        myLog("Check Shows Greater in {}".format(comp))
     else:
-        print("Check is not Good in {}".format(comp))
-        logging.error("Check is not Good in {}".format(comp))
+        myLog("Check is not Good in {}".format(comp))
 
 def pathCycle(mainfile,path,var):
     for root, dirs, files in os.walk(path, topdown=True):
@@ -140,14 +137,15 @@ def pathCycle(mainfile,path,var):
             with open(mainfile) as main:
                 with open(comp) as com:
                     if len(main.readlines()) == len(com.readlines()):
-                        print fileA
                         parseCompare(mainfile,fileA,root,var)
+                        print("\n\n---For log of output check:---\n{}\{}".format(cwd,log))
+                        print("---------------------------------------------------------")
                     elif len(main.readlines()) != len(com.readlines()):
-                        pass
+                        print "Parameter '{}' not found in file:\n{}".format(var,fileA)
 
 
 if __name__ == "__main__":
+
     # parseCompare()
     pathCycle(mainfile=main,path=fileP,var=srch)
-    print("\n\n---For log of output check:---\n{}\{}".format(cwd,log))
-    print("---------------------------------------------------------")
+    # print "done"
