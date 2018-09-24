@@ -16,11 +16,6 @@ import argparse
 import logging
 import datetime
 
-# WIN=False
-# LIN=False
-
-# print os.path.abspath("monkey_no_hands.txt")
-
 system = platform.system()
 
 now = datetime.datetime.now()
@@ -30,21 +25,6 @@ crtdate = "{0}-{1}-{2}".format(now.year,now.month,now.day)
 cwd = os.getcwd()
 
 print cwd
-
-# for x, y, z in os.walk(cwd, topdown=False):
-#     if 
-#         dfltref = os.path.join(x,z[0])
-#         print dfltref
-
-# if os == "Linux":
-#     LIN = True
-# else:
-#     WIN = True
-
-# if WIN == True:
-#     stnd = os.
-# elif LIN == True:
-#     stnd = "/root/danny/"
 
 parser = argparse.ArgumentParser()
 parser.add_argument("-r", "--reference", 
