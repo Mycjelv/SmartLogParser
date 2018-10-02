@@ -15,6 +15,7 @@ import platform
 import argparse
 import logging
 import datetime
+import re
 
 system = platform.system()
 
@@ -26,12 +27,27 @@ cwd = os.getcwd()
 
 print cwd
 
+n = 1
+
+for root, dirs, files in os.walk(cwd, topdown=False):
+    for fileA in files:
+        if n == 1:
+            if fileA.find("LOG") != -1:
+                dfltref = os.path.join(root,fileA)
+                n = n + 1
+            else:
+                pass
+        else:
+            pass
+
+
 parser = argparse.ArgumentParser()
 parser.add_argument("-r", "--reference", 
                     action='store',
                     dest='ref',
                     type=str,
-                    # default=dfltref,
+                    nargs="?",
+                    default=dfltref,
                     help="Reference file for parsing")
 parser.add_argument("-f", "--filepath",
                     action='store',
@@ -113,15 +129,19 @@ def parseCompare(main,compare,path,srch):
 def pathCycle(mainfile,path,var):
     for root, dirs, files in os.walk(path, topdown=True):
         for fileA in files:
-            comp = os.path.join(root,fileA)
-            with open(mainfile) as main:
-                with open(comp) as com:
-                    if len(main.readlines()) == len(com.readlines()):
-                        parseCompare(mainfile,fileA,root,var)
-                        print("\n\n---For log of output check:---\n{}\{}".format(cwd,log))
-                        print("---------------------------------------------------------")
-                    elif len(main.readlines()) != len(com.readlines()):
-                        print "Parameter '{}' not found in file:\n{}".format(var,fileA)
+            if fileA.find("LOG") != -1:
+                comp = os.path.join(root,fileA)
+                with open(mainfile) as main:
+                    with open(comp) as com:
+                        if len(main.readlines()) == len(com.readlines()):
+                            myLog("\n\n****Reference File: {}****\n\n".format(mainfile))
+                            parseCompare(mainfile,fileA,root,var)
+                            print("\n\n---For log of output check:---\n{}\{}".format(cwd,log))
+                            print("--------------------------------")
+                        elif len(main.readlines()) != len(com.readlines()):
+                            print "Parameter '{}' not found in file:\n{}".format(var,fileA)
+            else:
+                myLog("\n\nFile {} does not match expected file name\n\n".format(fileA))
 
 
 if __name__ == "__main__":
